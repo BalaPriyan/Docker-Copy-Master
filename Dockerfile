@@ -59,7 +59,7 @@ RUN echo -e "\e[32m[INFO]: Building and Installing MegaSdkC++.\e[0m" && \
     git clone https://github.com/meganz/sdk.git ~/home/sdk && \
     cd ~/home/sdk && rm -rf .git && \
     ./autogen.sh && \
-    ./configure CFLAGS='-fpermissive' CXXFLAGS='-fpermissive' CPPFLAGS='-fpermissive' CCFLAGS='-fpermissive' \
+    ../configure CFLAGS='-fpermissive' CXXFLAGS='-fpermissive -std=c++14' CPPFLAGS='-fpermissive' CCFLAGS='-fpermissive' \
     --disable-silent-rules --enable-python --with-sodium --disable-examples --with-python3 && \
     make -j$(nproc --all) && \
     cd bindings/python/ && \
