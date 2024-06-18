@@ -1,45 +1,43 @@
+# Use an official Ubuntu as a parent image
 FROM ubuntu:latest
 
-# LABEL
-LABEL org.opencontainers.image.source="https://github.com/BalaPriyan/BP-ML"
-LABEL org.opencontainers.image.description="Docker for BP-MLB on Ubuntu docker image"
+# Set metadata for the image
+LABEL org.opencontainers.image.source="https://github.com/yourusername/your-repo"
+LABEL org.opencontainers.image.description="Docker image for your application"
 
-ARG TARGETPLATFORM BUILDPLATFORM
+# Set environment variables
+ENV TZ=Asia/Dhaka
 
-# Setup Working Directory
+# Update and install packages
+RUN apt-get update && apt-get install -y \
+    sudo \
+    python3 \
+    python3-pip \
+    curl \
+    wget \    # Install wget
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
 WORKDIR /usr/src/app
+
+# Copy your application code into the container
+COPY . .
+
+# Set permissions if necessary
 RUN chmod -R 777 /usr/src/app && \
     chmod -R +x /usr/src/app && \
     chmod -R 705 /usr/src/app
 
-ENV TZ Asia/Dhaka
-
-# Installing basic packages
-RUN echo -e "\e[32m[INFO]: Installing basic packages.\e[0m" && \
-    apt-get update && apt-get upgrade -y && \
-    apt-get install -y \
-    sudo python3-pip python3-wheel python3-dev busybox locales git lshw qbittorrent-nox \
-    aria2 p7zip-full xz-utils curl pv jq ffmpeg parallel neofetch make g++ gcc automake zip unzip \
-    autoconf speedtest-cli mediainfo bash tzdata libffi-dev python3-virtualenv dpkg cmake \
-    nodejs npm bash-completion && \
-    npm install -g localtunnel kill-port && \
-    sed -i -e "s/bin\/sh/bin\/bash/" /etc/passwd
-
-
-#rclone
-RUN echo -e "\e[32m[INFO]: Installing rclone.\e[0m" && \
-    curl https://rclone.org/install.sh | bash
-
-SHELL ["/bin/bash", "-c"]
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Installing Build Tools
 RUN echo -e "\e[32m[INFO]: Installing Building tools.\e[0m" && \
     apt-get update && \
     apt-get install -y \
-    libtool libcurl4-openssl-dev libsodium-dev libc-ares-dev libsqlite3-dev libfreeimage-dev \
+    libtool libcurl4-openssl-dev libsodium-dev libcares-dev libsqlite3-dev libfreeimage-dev \
     swig libboost-all-dev zlib1g-dev libpq-dev clang ccache gettext gawk libcrypto++-dev \
     libjpeg-turbo8-dev
-
 
 # Installing Cloudflared Tunnel
 RUN echo -e "\e[32m[INFO]: Installing Cloudflared Tunnel.\e[0m" && \
@@ -49,7 +47,7 @@ RUN echo -e "\e[32m[INFO]: Installing Cloudflared Tunnel.\e[0m" && \
          "linux/arm/v7") ARCH=armhf  ;; \
     esac && \
     wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-${ARCH}.deb -O cloudflared-linux-${ARCH}.deb && \
-    sudo dpkg -i --force-architecture cloudflared-linux-${ARCH}.deb
+    dpkg -i --force-architecture cloudflared-linux-${ARCH}.deb
 
 # Building and Installing MegaSdkC++
 ENV PYTHONWARNINGS=ignore
