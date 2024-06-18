@@ -36,9 +36,10 @@ SHELL ["/bin/bash", "-c"]
 RUN echo -e "\e[32m[INFO]: Installing Building tools.\e[0m" && \
     apt-get update && \
     apt-get install -y \
-    libtool libcurl4-openssl-dev libsodium-dev libcares-dev libsqlite3-dev libfreeimage-dev \
+    libtool libcurl4-openssl-dev libsodium-dev libc-ares-dev libsqlite3-dev libfreeimage-dev \
     swig libboost-all-dev zlib1g-dev libpq-dev clang ccache gettext gawk libcrypto++-dev \
     libjpeg-turbo8-dev
+
 
 # Installing Cloudflared Tunnel
 RUN echo -e "\e[32m[INFO]: Installing Cloudflared Tunnel.\e[0m" && \
