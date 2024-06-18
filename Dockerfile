@@ -24,8 +24,9 @@ RUN echo -e "\e[32m[INFO]: Installing basic packages.\e[0m" && \
     sudo python3-pip python3-wheel python3-dev busybox locales git lshw qbittorrent-nox \
     aria2 p7zip-full xz-utils curl pv jq ffmpeg parallel neofetch make g++ gcc automake zip unzip \
     autoconf speedtest-cli mediainfo bash tzdata libffi-dev python3-virtualenv dpkg cmake \
-    nodejs npm bash-completion wget && \    # Added wget for Cloudflared installation
-    npm install -g localtunnel kill-port && \
+    nodejs npm bash-completion wget && \
+    npm install -g localtunnel && \
+    npm install -g kill-port && \
     sed -i -e "s/bin\/sh/bin\/bash/" /etc/passwd
 
 # Installing rclone
